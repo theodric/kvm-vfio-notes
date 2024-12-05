@@ -12,17 +12,17 @@ As of 2024-12-05, KVM VFIO passthrough of a current-gen Nvidia card while retain
 I now provide a set of screenshots documenting every BIOS option, whether I changed it or not, as a means of providing a "known-good snapshot" of a working BIOS configuration. You will find them in the /screenshots directory of this repo.
 
 
-December 2024 ADDENDUM TO BELOW NOTES:
+[ December 2024 NOTES: ]
 1. I have found that the linux-amd-znver3 kernel reliaby works for passthrough, initializing devices in a sane order and respecting boot-time blacklist kernel args https://aur.archlinux.org/packages/linux-amd-znver3
 2. I have since managed to get the Nvidia RTX A2000 12GB working in passthrough
 3. The RTX 4000 SFF Ada Generation 20GB works as a drop-in replacement for the A2000.
-4. Stability is much improved - I don't know what to blame, but it's infrequent enough (i.e. one crash every few months) that I haven't spent time on it.
-5. I have recently transitioned away from Arch to openSUSE Tumbleweed, which works out-of-the-box as a passthrough host and does not constantly break.
+4. Stability is much improved - I don't know what to blame, but crashes are infrequent enough (i.e. one crash every 6-8 months) that I haven't spent time on it.
+5. I have recently transitioned away from Arch to openSUSE Tumbleweed, which works out-of-the-box as a passthrough host and does not constantly break. [ December 2024 note: openSUSE is love, openSUSE is life. ]
 6. I am separately maintaning a variant of the linux-amd-znver3 and linux-amd-znver2 configs which have been tweaked to work on openSUSE and are available at https://github.com/theodric/linux-amd-zen2-zen3/
 
 
 
-2022 NOTES - FULLY WORKING PASSTHROUGH 
+2022 NOTES - FULLY WORKING ALL-AMD PASSTHROUGH 
 
 In this configuration, I have two fully independent "computer stations" that can be used simultaneously:
 1. the host Linux system, on which I have a KDE desktop
@@ -33,33 +33,32 @@ CPU: Ryzen 7 5700G
 MB: Biostar B550T-SILVER
 Host GFX: Ryzen 7 5700G iGPU
 Passthrough GFX: PCIe MSI Radeon 560 ITX (fully working in Windows and Linux guests)
-(new: Nvidia GeForce RTX A2000 12GB - so far not cooperating in any way - curse you, Nvidia!)
 
 In UEFI setup:
 
 In Advanced -> PCI Subsystem Settings:
-Enable Above 4G decoding
-Disable Resizable BAR
-Enable SR-IOV support
-Enable BME DMA Mitigation
+- Enable Above 4G decoding
+- Disable Resizable BAR
+- Enable SR-IOV support
+- Enable BME DMA Mitigation
 
 In Advanced -> CSM Support
-Option ROM Execution:
-Network - UEFI
-Storage - UEFI
-Video - Legacy - forces PCIe GPU to legacy mode so it doesn't get grabbed by UEFI, which would stop it from being free for passthrough to the VM
-Other PCI Device - UEFI
+- Option ROM Execution:
+- Network - UEFI
+- Storage - UEFI
+- Video - Legacy - forces PCIe GPU to legacy mode so it doesn't get grabbed by UEFI, which would stop it from being free for passthrough to the VM
+- Other PCI Device - UEFI
 
 In Chipset:
-In North Bridge Configuration
-IOMMU -> Enabled
-Primary video device -> IGD Video
+- In North Bridge Configuration
+- IOMMU -> Enabled
+- Primary video device -> IGD Video
 
 append kernel args: iommu=pt and vfio-pci.ids=<PCI IDs of all cards to be passed through>
 
 Find those IDs and check their PCIe group assignments with this script:
 
-[root@cube ~]# cat vfio.sh
+`[root@cube ~]# cat vfio.sh
 #!/bin/bash
 shopt -s nullglob
 for g in $(find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V); do
@@ -67,7 +66,7 @@ for g in $(find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V); do
     for d in $g/devices/*; do
         echo -e "\t$(lspci -nns ${d##*/})"
     done;
-done;
+done;`
 
 I am passing through 1 or 2 ports of the onboard USB 3.2 controller that is in its own PCIe device group, because the other controllers are in groups with other devices and don't break out cleanly even with the additional kernel args, resulting in instability.
 
