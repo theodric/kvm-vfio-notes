@@ -1,12 +1,14 @@
 # kvm-vfio-notes
+
 Notes on getting KVM VFIO working on my hardware:
-CPU: Ryzen 7 5700G
-MB: Biostar B550T-SILVER
-Host GFX: Ryzen 7 5700G iGPU
-Passthrough GFX: PCIe Nvidia RTX 4000 SFF Ada Generation 20GB
-BIOS version: B55AK830 (AMD AM4 AGESA 1.2.0.Cc) (https://www.biostar.com.tw/app/en/mb/introduction.php?S_ID=1010&data-type=DOWNLOAD)
+- CPU: Ryzen 7 5700G
+- MB: Biostar B550T-SILVER
+- Host GFX: Ryzen 7 5700G iGPU
+- Passthrough GFX: PCIe Nvidia RTX 4000 SFF Ada Generation 20GB
+- BIOS version: B55AK830 (AMD AM4 AGESA 1.2.0.Cc) (https://www.biostar.com.tw/app/en/mb/introduction.php?S_ID=1010&data-type=DOWNLOAD)
 
 As of 2024-12-05, KVM VFIO passthrough of a current-gen Nvidia card while retaining the Ryzen 5700G's IGP as the host's framebuffer console is fully working.
+
 I now provide a set of screenshots documenting every BIOS option, whether I changed it or not, as a means of providing a "known-good snapshot" of a working BIOS configuration. You will find them in the /screenshots directory of this repo.
 
 
