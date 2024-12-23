@@ -13,12 +13,13 @@ I now provide a set of screenshots documenting every BIOS option, whether I chan
 
 
 [ December 2024 NOTES: ]
-1. I have found that the linux-amd-znver3 kernel reliaby works for passthrough, initializing devices in a sane order and respecting boot-time blacklist kernel args https://aur.archlinux.org/packages/linux-amd-znver3
-2. I have since managed to get the Nvidia RTX A2000 12GB working in passthrough
-3. The RTX 4000 SFF Ada Generation 20GB works as a drop-in replacement for the A2000.
-4. Stability is much improved - I don't know what to blame, but crashes are infrequent enough (i.e. one crash every 6-8 months) that I haven't spent time on it.
-5. I have recently transitioned away from Arch to openSUSE Tumbleweed, which works out-of-the-box as a passthrough host and does not constantly break. [ December 2024 note: openSUSE is love, openSUSE is life. ]
-6. I am separately maintaning a variant of the linux-amd-znver3 and linux-amd-znver2 configs which have been tweaked to work on openSUSE and are available at https://github.com/theodric/linux-amd-zen2-zen3/
+1. I have found that the linux-amd-znver3 kernel reliaby works for passthrough, initializing devices in a sane order and respecting boot-time blacklist kernel args https://aur.archlinux.org/packages/linux-amd-znver3.
+2. I have now fully migrated over to openSUSE, and the stock kernel there also works perfectly. However, since I am chasing optimization, I have created a synthesis of the Arch linux-amd-znver3 and openSUSE stock kernel configs, which I maintain separately here: https://github.com/theodric/linux-amd-zen1-zen2-zen3-openSUSE_TW
+3. I have since managed to get the Nvidia RTX A2000 12GB working in passthrough
+4. The RTX 4000 SFF Ada Generation 20GB works as a drop-in replacement for the A2000.
+5. Stability is much improved - I don't know what to blame, but crashes are infrequent enough (i.e. one crash every 6-8 months) that I haven't spent time on it.
+6. I have recently transitioned away from Arch to openSUSE Tumbleweed, which works out-of-the-box as a passthrough host and does not constantly break. [ December 2024 note: openSUSE is love, openSUSE is life. ]
+7. I am separately maintaning a variant of the linux-amd-znver3 and linux-amd-znver2 configs which have been tweaked to work on openSUSE and are available at https://github.com/theodric/linux-amd-zen2-zen3/
 
 
 
