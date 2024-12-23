@@ -58,7 +58,8 @@ append kernel args: iommu=pt and vfio-pci.ids=<PCI IDs of all cards to be passed
 
 Find those IDs and check their PCIe group assignments with this script:
 
-`[root@cube ~]# cat vfio.sh
+```bash
+[root@cube ~]# cat vfio.sh
 #!/bin/bash
 shopt -s nullglob
 for g in $(find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V); do
@@ -66,7 +67,8 @@ for g in $(find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V); do
     for d in $g/devices/*; do
         echo -e "\t$(lspci -nns ${d##*/})"
     done;
-done;`
+done;
+```
 
 I am passing through 1 or 2 ports of the onboard USB 3.2 controller that is in its own PCIe device group, because the other controllers are in groups with other devices and don't break out cleanly even with the additional kernel args, resulting in instability.
 
@@ -76,8 +78,10 @@ The WLAN socket on this board functions perfectly as a standard PCIe 4x slot wit
 
 Works with all kernels tested so far:
 
-`[root@cube ~]# cat /proc/cmdline`
-`BOOT_IMAGE=/boot/vmlinuz-linux-zen root=UUID=cbde20e5-0804-4179-ae95-7c1752d86f04 rw loglevel=3 net.ifnames=0 biosdevname=0 noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off iommu=pt vfio-pci.ids=1002:67ff,1002:aae0,1022:1639`
+```bash
+[root@cube ~]# cat /proc/cmdline
+BOOT_IMAGE=/boot/vmlinuz-linux-zen root=UUID=cbde20e5-0804-4179-ae95-7c1752d86f04 rw loglevel=3 net.ifnames=0 biosdevname=0 noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off iommu=pt vfio-pci.ids=1002:67ff,1002:aae0,1022:1639
+```
 
 After that, it's just a matter of assigning the PCIe devices and/or host USB devices to the VM in either the virt-manager GUI, or else directly in the config file if you're a masochist.
 
@@ -93,14 +97,16 @@ OSX-KVM instructions say to blacklist the graphics card driver and use only inte
 
 The solution is to use the sysfs interface to unbind the device I will pass through to macOS from the driver, like so:
 
-`root@kvm-mule:/sys/bus/pci/drivers/amdgpu# lspci -vv | grep -i amd
+```bash
+root@kvm-mule:/sys/bus/pci/drivers/amdgpu# lspci -vv | grep -i amd
 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Baffin [Radeon RX 550 640SP / RX 560/560X] (rev cf) (prog-if 00 [VGA controller])
-	Kernel driver in use: amdgpu
-	Kernel modules: amdgpu
+    Kernel driver in use: amdgpu
+    Kernel modules: amdgpu
 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Baffin HDMI/DP Audio [Radeon RX 550 640SP / RX 560/560X]
 02:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Tahiti XT [Radeon HD 7970/8970 OEM / R9 280X] (prog-if 00 [VGA controller])
-	Kernel modules: radeon, amdgpu
-02:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Tahiti HDMI Audio [Radeon HD 7870 XT / 7950/7970]`
+    Kernel modules: radeon, amdgpu
+02:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Tahiti HDMI Audio [Radeon HD 7870 XT / 7950/7970]
 
-`root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > unbind #detach - works live`
-`root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > bind #reattach - works live`
+root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > unbind #detach - works live
+root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > bind #reattach - works live
+```
