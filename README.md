@@ -71,30 +71,36 @@ done;`
 I am passing through 1 or 2 ports of the onboard USB 3.2 controller that is in its own PCIe device group, because the other controllers are in groups with other devices and don't break out cleanly even with the additional kernel args, resulting in instability.
 
 The WLAN socket on this board functions perfectly as a standard PCIe 4x slot with an adapter cable, but again, it's part of a group of several other devices. However, adding a USB3 card here helps make up for the ports lost to passthrough.
+
 -> TODO: see if my PCIe switch works on this
 
 Works with all kernels tested so far:
 
-[root@cube ~]# cat /proc/cmdline
-BOOT_IMAGE=/boot/vmlinuz-linux-zen root=UUID=cbde20e5-0804-4179-ae95-7c1752d86f04 rw loglevel=3 net.ifnames=0 biosdevname=0 noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off iommu=pt vfio-pci.ids=1002:67ff,1002:aae0,1022:1639
+`[root@cube ~]# cat /proc/cmdline`
+`BOOT_IMAGE=/boot/vmlinuz-linux-zen root=UUID=cbde20e5-0804-4179-ae95-7c1752d86f04 rw loglevel=3 net.ifnames=0 biosdevname=0 noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off iommu=pt vfio-pci.ids=1002:67ff,1002:aae0,1022:1639`
 
 After that, it's just a matter of assigning the PCIe devices and/or host USB devices to the VM in either the virt-manager GUI, or else directly in the config file if you're a masochist.
+
 To get rid of the Spice display that is auto-populated, you may have to resort to editing XML, because the GUI will often refuse to let you delete it, citing some dependency.
+
 After that, you can just toggle the virtual (non-GPU) display on and off as required by changing the Video -> Model setting in the VM properties between "None" and the other options.
 
 ######### OLD 2021 NOTES - PROXMOX ON MAC PRO 5,1 ################
+
 The device to be passed through can't be held by any driver. 
+
 OSX-KVM instructions say to blacklist the graphics card driver and use only integrated graphics, but that doesn't work for me because my Socket 1366 Xeon does not have onboard graphics, and both of the video cards in the system use the amdgpu kernel module.
 
 The solution is to use the sysfs interface to unbind the device I will pass through to macOS from the driver, like so:
-root@kvm-mule:/sys/bus/pci/drivers/amdgpu# lspci -vv | grep -i amd
+
+`root@kvm-mule:/sys/bus/pci/drivers/amdgpu# lspci -vv | grep -i amd
 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Baffin [Radeon RX 550 640SP / RX 560/560X] (rev cf) (prog-if 00 [VGA controller])
 	Kernel driver in use: amdgpu
 	Kernel modules: amdgpu
 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Baffin HDMI/DP Audio [Radeon RX 550 640SP / RX 560/560X]
 02:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Tahiti XT [Radeon HD 7970/8970 OEM / R9 280X] (prog-if 00 [VGA controller])
 	Kernel modules: radeon, amdgpu
-02:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Tahiti HDMI Audio [Radeon HD 7870 XT / 7950/7970]
+02:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Tahiti HDMI Audio [Radeon HD 7870 XT / 7950/7970]`
 
-root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > unbind #detach - works live
-root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > bind #reattach - works live
+`root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > unbind #detach - works live`
+`root@kvm-mule:/sys/bus/pci/drivers/amdgpu# echo -n 0000:01:00.0 > bind #reattach - works live`
