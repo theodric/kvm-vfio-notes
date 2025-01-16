@@ -11,15 +11,14 @@ As of 2024-12-05, KVM VFIO passthrough of a current-gen Nvidia card while retain
 
 I now provide a set of screenshots documenting every BIOS option, whether I changed it or not, as a means of providing a "known-good snapshot" of a working BIOS configuration. You will find them in the /screenshots directory of this repo.
 
-[ January 2025 notes: ]
-16-Jan-2025 
-I feel like the system is flakier about POSTing with BIOS B55AK830. In particular, it hangs around on BIOS POST code B4 (USB init) for SEVERAL MINUTES each reboot before moving normally on through the rest of the POST process. I have made no effort thus far to determine of this this is an unrelated post-hoc red herring, or a regression associated with the new BIOS version.
+[ January 2025 notes: ]  
+16-Jan-2025  
+I feel like the system is flakier about POSTing with BIOS B55AK830. In particular, it hangs around on BIOS POST code B4 (USB init) for SEVERAL MINUTES each reboot before moving normally on through the rest of the POST process. I have made no effort thus far to determine of this this is an unrelated post-hoc red herring, or a regression associated with the new BIOS version.  
 
-While exploring the idea of switching to a card with more than my current 20GB VRAM, attempted set "Above 4G decoding" to "Enabled" and thereafter the dependent suboption "Resizable BAR" set to "Auto," but found that while the system will POST, continues to direct its video output correctly through the iGPU, and boot the OS, the combination of these two options being enabled causes KVM to fail with an "internal error" when attempting to start a VM with the RTX 4000 SFF Ada Generation 20GB card passed through to it.
-With only "Above 4G decoding" enabled but "Resizable BAR" disabled, VMs start, run, and access the passed-through GPU normally.
-VMs also work normally and are able to use all of the available VRAM address space without these options enabled.
-MY GUESS: this setting only matters when attempting to use the card directly on the host system and through its UEFI, rather than within the VM, which implements its own configuration.
-
+While exploring the idea of switching to a card with more than my current 20GB VRAM, attempted set "Above 4G decoding" to "Enabled" and thereafter the dependent suboption "Resizable BAR" set to "Auto," but found that while the system will POST, continues to direct its video output correctly through the iGPU, and boot the OS, the combination of these two options being enabled causes KVM to fail with an "internal error" when attempting to start a VM with the RTX 4000 SFF Ada Generation 20GB card passed through to it.  
+With only "Above 4G decoding" enabled but "Resizable BAR" disabled, VMs start, run, and access the passed-through GPU normally.  
+VMs also work normally and are able to use all of the available VRAM address space without these options enabled.  
+MY GUESS: this setting only matters when attempting to use the card directly on the host system and through its UEFI, rather than within the VM, which implements its own configuration.  
 
 [ December 2024 notes: ]
 1. I have found that the linux-amd-znver3 kernel reliaby works for passthrough, initializing devices in a sane order and respecting boot-time blacklist kernel args https://aur.archlinux.org/packages/linux-amd-znver3.
