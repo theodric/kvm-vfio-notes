@@ -12,8 +12,11 @@ As of 2024-12-05, KVM VFIO passthrough of a current-gen Nvidia card while retain
 I now provide a set of screenshots documenting every BIOS option, whether I changed it or not, as a means of providing a "known-good snapshot" of a working BIOS configuration. You will find them in the /screenshots directory of this repo.
 
 [ January 2025 notes: ]  
+19-Jan-2025
+I had a shitty USB device installed. Once removed, BIOS B55AK830 works as expected. I apologize for slandering a perfectly fine BIOS.
+
 16-Jan-2025  
-I feel like the system is flakier about POSTing with BIOS B55AK830. In particular, it hangs around on BIOS POST code B4 (USB init) for SEVERAL MINUTES each reboot before moving normally on through the rest of the POST process. I have made no effort thus far to determine of this this is an unrelated post-hoc red herring, or a regression associated with the new BIOS version.  
+~~I feel like the system is flakier about POSTing with BIOS B55AK830. In particular, it hangs around on BIOS POST code B4 (USB init) for SEVERAL MINUTES each reboot before moving normally on through the rest of the POST process. I have made no effort thus far to determine of this this is an unrelated post-hoc red herring, or a regression associated with the new BIOS version.~~  
 
 While exploring the idea of switching to a card with more than my current 20GB VRAM, attempted to set "Above 4G decoding" to "Enabled" and thereafter the dependent suboption "Resizable BAR" to "Auto," but found that while the system POSTs, continues to direct its video output correctly through the iGPU, and boots the OS, the combination of these two options being enabled causes qemu/KVM to fail with an "internal error" when attempting to start a VM with the RTX 4000 SFF Ada Generation 20GB card passed through to it.  
 With only "Above 4G decoding" enabled but "Resizable BAR" disabled, VMs start, run, and access the passed-through GPU normally.  
