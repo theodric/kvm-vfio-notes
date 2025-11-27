@@ -11,8 +11,8 @@ As of 2024-12-05, KVM VFIO passthrough of a current-gen Nvidia card while retain
 
 I now provide a set of screenshots documenting every BIOS option, whether I changed it or not, as a means of providing a "known-good snapshot" of a working BIOS configuration. You will find them in the /screenshots directory of this repo.
 
-[ November 2025 notes: ]
-I recommend that you DO NOT install the B55AK831 BIOS (rel. 2025-08-31) on your Biostar B550T-SILVER. I was left with silent RAM corruption, as well as the system declaring that VFIO (VT-d, Pacifica, whatever you want to call it) was not enabled after a couple boots with it working fine when I changed nothing at all in the system between them. I reverted to B55AK830, reapplied the settings documented in the `screenshots` directory here, and normal system function returned.
+[ November 2025 notes: ]  
+I recommend that you **DO NOT** install the B55AK831 BIOS (rel. 2025-08-31) on your Biostar B550T-SILVER. I was left with silent RAM corruption, as well as the system declaring that VFIO (VT-d, Pacifica, whatever you want to call it) was not enabled after a couple boots with it working fine when I changed nothing at all in the system between them. I reverted to B55AK830, reapplied the settings documented in the `screenshots` directory here, and normal system function returned.
 
 [ January 2025 notes: ]  
 19-Jan-2025
